@@ -239,6 +239,29 @@ class AudioFile:
         peaks, peakproperties = sci.signal.find_peaks(array, height = height, prominence = percentile, distance = distance)
 
         return peaks
+
+    # method for plotting the magnitude spectrum of a given audiofile object with 
+    # the peaks (computed using the windowedPeaks method) visually illustrated 
+    def graph_magspec_withWindowedPeaks(self, percentile: float, numberFundamentalsInWindow: int = 5) -> None:
+        windowedPeaks = self.windowedPeaks(percentile=percentile, numberFundamentalsInWindow=numberFundamentalsInWindow)
+        
+        peakHeight = np.zeros(len(windowedPeaks))
+        
+        for i in range(len(windowedPeaks)):
+            peakHeight[i] = self.magspec[windowedPeaks[i]]
+
+        R = self.sr/self.N
+
+        plt.figure(figsize=(8,8))
+
+        plt.plot(self.freq, self.magspec)
+        plt.scatter(windowedPeaks*R,peakHeight,c='orange',s=12)
+        plt.xlabel('frequency (Hz)')
+        plt.ylabel('Magnitude of RFFT')
+        plt.title(f'Magnitude spectrum of {self.file}, window width {numberFundamentalsInWindow}, percentile {percentile}')
+        plt.savefig(f'windowpeaks-{percentile}perc-{self.file}.png')
+        #plt.clf()
+        plt.show()
     
     @staticmethod
     def printAggregateError(directory: str, numberOfFundamentalsInWindow: int, percentile: float, badData: list = None, SpecificType: str = None) -> dict:
