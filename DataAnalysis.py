@@ -1,6 +1,4 @@
-import math
 from collections import Counter
-import numpy as np
 from Constants import Constants
 
 
@@ -9,7 +7,7 @@ class DataAnalysis:
     def __init__(self, array):
         self.array = array
         self.valid_data = True
-        self.max_difference = Constants.integerThreshold #max_difference is how far away from an integer multiple we're considering to be a good value
+        self.max_difference = Constants.INTEGER_THRESHOLD #max_difference is how far away from an integer multiple we're considering to be a good value
 
     def checkIfClose(self, number : float) -> float:
         closest_int = round(number)
