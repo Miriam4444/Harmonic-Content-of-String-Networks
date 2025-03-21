@@ -92,4 +92,42 @@ Similarly to above, solving this yields harmonics of the form
 k = \frac{n \pi}{\ell_1 + \ell_2}, \quad n = 1, 2, 3, \ldots
 ```
 
-which means that, when plucked, the 2-string system should sound exactly like one string whose length is the sum of the 2 string lengths!  In other words, our concatenated 2-string system is (theoretically) just 1 long string in disguise!
+which means that, when plucked, the 2-string system should sound exactly like one string whose length is the sum of the 2 string lengths!  In other words, our concatenated 2-string system is (theoretically) just 1 long string in disguise!  From here, we wanted to investigate what happens if three strings are connected in a similar fashion.  Note that, by the above computations, three strings concatenated end-to-end-to-end would really just be one string in disguise again (whose length would be the sum of the three string lengths), so one way to make this more interesting is to examine a Y shape for the configuration.
+
+
+#### Three strings
+
+We'll consider 3 strings each pinned at one end and connected together at a central node, as (crudely) depicted below:
+
+<pre>
+o
+| \ str1       o
+    \        / |
+      \     / str2
+       \  /
+        o node
+        |
+        | str3
+        |
+        o
+        |
+</pre>
+
+The mathematical model follows similarly to the above:
+
+```math
+\begin{cases}
+- u'' = k^2 u\\
+u_1(\ell_1) = u_2(\ell_2) = u_3(\ell_3) = 0\\
+u_1\prime(0) + u_2\prime(0) + u_3\prime(0) = 0\\
+u_1(0) = u_2(0) = u_3(0)
+\end{cases}
+```
+
+The harmonic values are significantly more complicated in this case!  They turn out to be the solutions of the following equation:
+
+```math
+\cot(\ell_1 k) + \cot(\ell_2 k) + \cot(\ell_3 k) = 0
+```
+
+which means, for one thing, that we are definitely not looking at a single string in disguise anymore---this is something else entirely.
