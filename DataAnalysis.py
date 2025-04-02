@@ -110,3 +110,5 @@ class DataAnalysis:
             with open(f"{fileName}", "a") as f:
                 f.write(f"There are {badData} entries that either aren't integer multiples of the fundamental or are duplicates.\n")
         return nonInt
+    
+    
