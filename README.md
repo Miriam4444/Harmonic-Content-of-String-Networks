@@ -18,7 +18,25 @@ This repository is organized into two branches:
 
 #### Python files
 
-*description needed*
+We organized our code into 5 classes. 
+1. AudioFilesArray.py
+2. DataAnalysis.py
+3. AudioFile.py
+4. Constants.py
+5. TestAudioFile.py
+
+The AudioFilesArray class is where we determine which files we're looking at. There are three methods in total which contribute to forming a list of the audio samples we want to analyze. This list is creating by taking in a string and looking for any sample whos name contains that string, hence why it is important to have consistent naming conventions. 
+
+The DataAnalysis class is responsible for analyzing the harmonic spectrum of a given sample and determining if there are any harmonics that are not integer multiples of the fundamental frequency in addition to searching for duplicate values in the spectra.
+
+The AudioFile class is responsible for carrying three main things: 
+- Plotting the magnitude spectrum, AKA producing the graph of the peaks denoting the harmonics present in the audio sample
+- Plotting the ratio array, AKA plotting the comparison between the harmonics predicted by our mathematical model and the harmonics we observed in our audiosample.
+- Calculating the aggregate error
+
+The Constants class contains all of the nonchanging values throughout the code. If you'd like to change someting, adjust the cpnstants file appropriately. 
+
+The TestAudioFile class is where we are actually running the code. Make sure to comment out action you don't want to be performs accordingly.
 
 #### Audio samples
 
