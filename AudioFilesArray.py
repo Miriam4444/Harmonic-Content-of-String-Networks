@@ -11,7 +11,7 @@ class AudioFilesArray:
         self.directoryPath = directoryPathName
 
     #This function goes through all of the files in a directory and adds them to a list
-    def makeFilePathList(self):
+    def makeFilePathList(self) -> list:
         fileNames = [] #instantiates a list that we're going to use to store the file names
         #Iterate through all of the files in the directory
         for filePath in self.directoryPath.iterdir():
@@ -21,7 +21,7 @@ class AudioFilesArray:
                 fileNames.append(filePath)
         return fileNames
     
-    def makeFileNameList(self):
+    def makeFileNameList(self) -> list:
         fileNames = [] #instantiates a list that we're going to use to store the file names
         #Iterate through all of the files in the directory
         for filePath in self.directoryPath.iterdir():
@@ -32,7 +32,7 @@ class AudioFilesArray:
         return fileNames
     
     #choose what string of letters the file needs to contain
-    def getSpecificType(self):
+    def getSpecificType(self) -> list:
         type = Constants.SELECTED_SAMPLES
         fileNames = self.makeFileNameList()
         filePaths = self.makeFilePathList()
