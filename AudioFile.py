@@ -169,7 +169,7 @@ class AudioFile:
             window = self.bins[minIndex + i*windowWidth: minIndex + (i+1)*windowWidth]
 
             #run through original array, and determine the threshold to accept frequencies
-            tempPeaks = AudioFile.staticFindPeaks(signal[(window)], percentile=Constants.PERCENTILE_OF_LOWEST_SELECTED_PEAK, height = 0, distance = fund // Constants.DISTANCE)
+            tempPeaks = AudioFile.staticFindPeaks(signal[window], percentile=Constants.PERCENTILE_OF_LOWEST_SELECTED_PEAK, height = 0, distance = fund // Constants.DISTANCE)
             
             tempPeakHeights = signal[tempPeaks + minIndex + i*windowWidth]
 
@@ -180,7 +180,7 @@ class AudioFile:
             tempPeakHeights = tempPeakHeights[tempPeakHeightIndices]
 
             # set the threshold to the percentile/100 * (shortest suspected harmonic spike in window)
-            threshold = (percentile/100)*tempPeakHeights[len(tempPeaks)-numberFundamentalsInWindow]
+            threshold = (percentile/100)*tempPeakHeights[len(tempPeaks)-1]
 
             tempPeaks = AudioFile.staticFindPeaks(signal[window], percentile=1, height=threshold, distance=fund//6)
 
@@ -212,16 +212,16 @@ class AudioFile:
                 if np.abs(array[i]) < AThresh:
                     filteredArr[i] = 0
 
-            return filteredArr
+        return filteredArr
 
     def findPeaks(self, percentile: float) -> NDArray:
         height = percentile/100*self.meanProminence
 
         R = self.N/self.sr
 
-        filtered = self.filterSignal(self.dummyFundamental*R-20, hiFThresh=len(self.magSpec), AThresh=0)
+        filtered = self.filterSignal(self.magSpec, self.dummyFundamental*R-20, hiFThresh=len(self.magSpec), AThresh=0)
         
-        peaks, peakProperties = sci.signal.find_peaks(filtered, height = 2, prominence = height, distance = self.dummyFundamental*R//4)
+        peaks, peakProperties = sci.signal.find_peaks(x = filtered, height = 2, prominence = height, distance = self.dummyFundamental*R//4)
 
         return peaks
     
@@ -250,14 +250,17 @@ class AudioFile:
         return peaks
     
     @staticmethod
-    def printAggregateError(directory: str, numberOfFundamentalsInWindow: int, percentile: float, badData: list = None, SpecificType: str = None) -> dict:
-        nameArray = AudioFilesArray(Path(directory))
+    def printAggregateError(numberOfFundamentalsInWindow: int = None, percentile: float = None, badData: list = None) -> dict:
+        #directory = Constants.PATH_NAME
+        nameArray = AudioFilesArray()
 
-        if SpecificType != None:
-            namelist = nameArray.getSpecificType(SpecificType)
-        else:
-            namelist = nameArray.getSpecificType("1S")
-            print("No additional type information was given (e.g. 1S, 2S, 2S9, 2SC, etc.) so default of 1S was used.")
+        if numberOfFundamentalsInWindow == None:
+            numberOfFundamentalsInWindow = Constants.DEFAULT_NUM_FUNDAMENTALS
+
+        if percentile == None:
+            percentile = Constants.DEFAULT_PERCENTILE
+
+        namelist = nameArray.getSpecificType()
 
         # initialize an empty |audiofiles| array to be populated with audiofile arrays
         objArray = np.empty(len(namelist), dtype=AudioFile)
@@ -307,16 +310,16 @@ class AudioFile:
             DA = DataAnalysis(windowedRatioArray)
             #DA.checkDataTextFile(sampleValue=0.2, fileName=f"AggError-{SpecificType}-{numberOfFundamentalsInWindow}-{percentile}.txt")
             
-            with open(f"AggError-{SpecificType}-{numberOfFundamentalsInWindow}-{percentile}.txt", "a") as f:
+            with open(f"AggError-{Constants.SELECTED_SAMPLES}-{numberOfFundamentalsInWindow}-{percentile}.txt", "a") as f:
                 f.write(f'{objArray[i].file}, fundamental = {round(objArray[i].dummyFundamental)}, mean error = {M[i]}, # datapoints = {dataPointsArray[i]}, # removed = {counter}\n')
                 #f.write(f'{DA.checkData(sampleValue=0.2)}\n')
-            nonInt = DA.checkDataTextFile(sampleValue=0.2, fileName=f"AggError-{SpecificType}-{numberOfFundamentalsInWindow}-{percentile}.txt")
-            for i in enumerate(nonInt):
-                fundamentalVsNonInt[round(objArray[i].dummyFundamental)]= i
+            nonInt = DA.checkDataTextFile(sampleValue=0.2, fileName=f"AggError-{Constants.SELECTED_SAMPLES}-{numberOfFundamentalsInWindow}-{percentile}.txt")
+            for i in range(len(nonInt)):
+                fundamentalVsNonInt[round(objArray[i].dummyFundamental)] = i
 
         m = stat.mean(M)
 
-        with open(f"AggError-{SpecificType}-{numberOfFundamentalsInWindow}-{percentile}.txt", "a") as f:
+        with open(f"AggError-{Constants.SELECTED_SAMPLES}-{numberOfFundamentalsInWindow}-{percentile}.txt", "a") as f:
             f.write(f'mean of mean absolute errors = {m}\n')
         
         return fundamentalVsNonInt
@@ -396,7 +399,7 @@ class AudioFile:
         plt.plot(idealRatioArray,idealRatioArray, label='theoretical')
 
         # plot the mean error for this sample in the bottom right 
-        plt.text(np.max(idealRatioArray)-0.01, 1, f'mean abs. error = {round(self.findAbsoluteError(percentile=percentile)[0],3)}\n # datapoints = {len(self.findratioArray(percentile=percentile))}', ha='right', va='bottom')
+        plt.text(np.max(idealRatioArray)-0.01, 1, f'mean abs. error = {round(self.findAbsoluteError(percentile=percentile)[0],3)}\n # datapoints = {len(self.findRatioArray(percentile=percentile))}', ha='right', va='bottom')
 
         # plot the actual ratio array values including error bars
         plt.errorbar(idealRatioArray, self.findRatioArray(percentile), yerr=yerr,
