@@ -9,12 +9,15 @@ class DataAnalysis:
         self.valid_data = True
         self.max_difference = Constants.INTEGER_THRESHOLD #max_difference is how far away from an integer multiple we're considering to be a good value
 
+    #Method checks if a float is close enough to an integer to be considered an integer
     def checkIfClose(self, number : float) -> float:
         closest_int = round(number)
+        #If the difference between the float and its nearest integer is less than the max_difference which acts as our threshold, then the float is considered an integer
         if abs(closest_int - number) <= self.max_difference:
             number = closest_int
         return number
     
+    # We're editing the 'value' array so that it only contains the non-integers which are our errors
     def checkIfDecimalClose(self, decimal : float, roundingPlace : int = None, threshold : float = None) -> None:
         if threshold == None:
             threshold = 10**(-(roundingPlace))
