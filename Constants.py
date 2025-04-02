@@ -27,6 +27,12 @@ class Constants:
 
     #size of ratio array graph and magSpec graph (it's a square)
     GRAPH_SIZE = 8
+
+    # default number of fundamentals in window for aggregate error
+    DEFAULT_NUM_FUNDAMENTALS = 5
+
+    # default percentile for aggregate error
+    DEFAULT_PERCENTILE = 80
     
     # AudioFilesArray Constants:
     #########################################################
